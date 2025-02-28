@@ -35,14 +35,7 @@ function App() {
 
   return (
     <div >
-      <header style={{ 
-      padding: "10px", 
-      backgroundColor: "blue", 
-      color: "white", 
-      display: "flex", 
-      justifyContent: "space-between", 
-      alignItems: "center"
-    }}>
+      <header>
         <h1>Online Auction Platform</h1>
         <nav>
           {!isAuthenticated ? (
