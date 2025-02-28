@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-function Login() {
-  const [username, setUsername] = useState('');
+function Login({ setIsLoggedIn}) {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -13,12 +13,11 @@ function Login() {
     setError('');
 
     try {
-      const res = await axios.post(`${process.env.REACT_APP_API_URL}/signin`, { username, password });
-      console.log('Login Response:', res.data);
+      const res = await axios.post("http://localhost:5001/login", { email, password });
 
       if (res.data.token) {
         localStorage.setItem('authToken', res.data.token);
-        navigate('/dashboard'); // Redirect to dashboard
+        navigate('/home'); // Redirect to dashboard
       } else {
         setError('Invalid credentials. Please try again.');
       }
@@ -35,9 +34,9 @@ function Login() {
       <form onSubmit={handleSignin}>
         <input
           type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          placeholder="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           autoComplete="off"
           required
         />

@@ -13,14 +13,15 @@ function Register() {
     e.preventDefault();
     setError('');
 
-    if (!username || !password) {
-      setError('Username and password are required');
+    if (!username || !email || !password) {
+      alert('All fields are required');
       return;
     }
 
     try {
-      const res = await axios.post(`${process.env.REACT_APP_API_URL}/signup`, {
+      const res = await axios.post('http://localhost:5001/register', {
         username,
+        email,
         password,
       });
 

@@ -35,7 +35,14 @@ function App() {
 
   return (
     <div >
-      <header>
+      <header style={{ 
+      padding: "10px", 
+      backgroundColor: "blue", 
+      color: "white", 
+      display: "flex", 
+      justifyContent: "space-between", 
+      alignItems: "center"
+    }}>
         <h1>Online Auction Platform</h1>
         <nav>
           {!isAuthenticated ? (
@@ -47,6 +54,7 @@ function App() {
             </>
           ) : (
             <>
+              <Link to="/home" className="nav-link">Home</Link>
               <Link to="/dashboard" className="nav-link">Dashboard</Link>
               <Link to="/post-auction" className="nav-link">Post Auction</Link>
               <button
