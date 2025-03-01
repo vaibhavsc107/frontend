@@ -9,42 +9,48 @@ function Dashboard() {
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     if (!token) {
-      nav('/login'); // Redirect to login if not authenticated
+      nav('/signin'); // Redirect to signin if not authenticated
       return;
     }
 
     const fetchItems = async () => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/auctions`);
+        const res = await axios.get('http://localhost:5001/auctions');
         setItems(res.data);
       } catch (error) {
         console.error('Error fetching auctions:', error);
       }
     };
-
     fetchItems();
-  }, [nav]);
+  }, []);
+
+  // 🔹 Handle Logout
+  const handleLogout = () => {
+    localStorage.removeItem('authToken'); // Remove token
+    navigate('/signin'); // Redirect to Sign In page
+  };
 
   return (
     <div>
       <h2>Auction Dashboard</h2>
+
+      {/* 🔹 Logout Button  */}
+      <button onClick={handleLogout}  style={{ marginLeft: '10px', background: 'red', color: 'white' }}>
+        Logout
+      </button>
 
       <Link to="/post-auction">
         <button>Post New Auction</button>
       </Link>
 
       <ul>
-        {items.length > 0 ? (
-          items.map((item) => (
-            <li key={item._id}>
-              <Link to={`/auction/${item._id}`}>
-                {item.itemName} - Current Bid: ${item.currentBid ?? '0.00'} {item.isClosed ? '(Closed)' : ''}
-              </Link>
-            </li>
-          ))
-        ) : (
-          <p>No auctions available.</p>
-        )}
+        {items.map((item) => (
+          <li key={item._id}>
+            <Link to={`/auction/${item._id}`}>
+              {item.itemName} - Current Bid: ${item.currentBid} {item.isClosed ? '(Closed)' : ''}
+            </Link>
+          </li>
+        ))}
       </ul>
     </div>
   );

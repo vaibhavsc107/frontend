@@ -17,6 +17,8 @@ function Login({ setIsLoggedIn}) {
 
       if (res.data.token) {
         localStorage.setItem('authToken', res.data.token);
+        window.dispatchEvent(new Event("storage")); // Trigger updateAuthStatus
+
         navigate('/home'); // Redirect to dashboard
       } else {
         setError('Invalid credentials. Please try again.');
@@ -56,3 +58,5 @@ function Login({ setIsLoggedIn}) {
 }
 
 export default Login;
+
+

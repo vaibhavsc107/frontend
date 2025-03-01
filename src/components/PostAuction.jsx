@@ -1,79 +1,76 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
 
-function PostAuction() {
-  const [itemName, setItemName] = useState('');
-  const [description, setDescription] = useState('');
-  const [startingBid, setStartingBid] = useState(0);
-  const [closingTime, setClosingTime] = useState('');
-  const navigate = useNavigate();
+const PostAuction = () => {
+  const [itemName, setItemName] = useState("");
+  const [description, setDescription] = useState("");
+  const [startingBid, setStartingBid] = useState("");
+  const [closingTime, setClosingTime] = useState("");
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      navigate('/login'); // Redirect to login if not authenticated
-    }
-  }, [navigate]);
-
-  const handlePostAuction = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('authToken');
+    setError(""); // Clear previous errors
+
+    const token = localStorage.getItem("authToken");
     if (!token) {
-      alert('You must be signed in to post an auction.');
-      navigate('/login');
+      setError("Unauthorized: Please log in");
       return;
     }
 
     try {
-      await axios.post(
-        'http://localhost:5001/auctions',
-        { itemName, description, startingBid, closingTime },
-        { headers: { Authorization: `Bearer ${token}` } } // Send token in headers
-      );
+      const response = await fetch("http://localhost:5001/auction", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // ✅ Include Token Here
+        },
+        body: JSON.stringify({ itemName, description, startingBid, closingTime }),
+      });
 
-      alert('Auction item posted!');
-      navigate('/dashboard');
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to post auction");
+
+      alert("Auction Posted Successfully!");
     } catch (err) {
-      alert('Failed to post auction. Please try again.');
+      setError(err.message);
     }
   };
 
   return (
-    <div className="form-container">
-      <h2>Post New Auction</h2>
-      <form onSubmit={handlePostAuction}>
+    <div className="from-container">
+      <h2>Post an Auction</h2>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <form onSubmit={handleSubmit}>
+
         <input
-          type="text"
-          placeholder="Item Name"
-          value={itemName}
-          onChange={(e) => setItemName(e.target.value)}
-          required
-        />
+        type="text"
+        placeholder="Item Name"
+        value={itemName}
+        onChange={(e) => setItemName(e.target.value)}
+        required />
+
         <textarea
-          placeholder="Item Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-        ></textarea>
+        placeholder="Description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        required />
+
         <input
-          type="number"
-          placeholder="Starting Bid"
-          value={startingBid}
-          onChange={(e) => setStartingBid(Number(e.target.value))}
-          required
-        />
+        type="number"
+        placeholder="Starting Bid"
+        value={startingBid}
+        onChange={(e) => setStartingBid(e.target.value)}
+        required />
+
         <input
-          type="datetime-local"
-          min={new Date().toISOString().slice(0, 16)} // Prevent past dates
-          value={closingTime}
-          onChange={(e) => setClosingTime(e.target.value)}
-          required
-        />
+        type="datetime-local"
+        value={closingTime}
+        onChange={(e) => setClosingTime(e.target.value)}
+        required />
         <button type="submit">Post Auction</button>
       </form>
     </div>
   );
-}
+};
 
 export default PostAuction;

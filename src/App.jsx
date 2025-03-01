@@ -21,17 +21,13 @@ function App() {
   // Check authentication status on mount
   useEffect(() => {
     updateAuthStatus();
-
+    
     // Listen for storage changes (logout in another tab)
     window.addEventListener('storage', updateAuthStatus);
     return () => window.removeEventListener('storage', updateAuthStatus);
-  }, []);
+  }, []);   // Re-run when authentication state changes
 
-  const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    setIsAuthenticated(false);
-    navigate('/login'); // Redirect to login
-  };
+
 
   return (
     <div >
@@ -50,13 +46,6 @@ function App() {
               <Link to="/home" className="nav-link">Home</Link>
               <Link to="/dashboard" className="nav-link">Dashboard</Link>
               <Link to="/post-auction" className="nav-link">Post Auction</Link>
-              <button
-                style={{ marginLeft: '10px', background: 'red', color: 'white' }}
-                onClick={handleLogout}
-                className="nav-link logout-button"
-              >
-                Logout
-              </button>
             </>
           )}
         </nav>
