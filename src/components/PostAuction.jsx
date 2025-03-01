@@ -37,7 +37,7 @@ const PostAuction = () => {
   };
 
   return (
-    <div className="from-container">
+    <div style={{  margin: "20px 35.25% 0% 35.25%"}}>
       <h2>Post an Auction</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
